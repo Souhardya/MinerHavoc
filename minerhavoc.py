@@ -52,7 +52,7 @@ os.system("sysctl -w fs.file-max=999999 >/dev/null")
 if sys.argv[3] == 'etherum':
     passwords = [ "ethos:live", "root:live" ] # etherum os default ssh credentials 
 if sys.argv[3] == 'misc':
-    passwords = [ "root:root", "admin:admin", "ubnt:ubnt" ] # KnC Miner and AntMiner default creds etc
+    passwords = [ "root:admin", "admin:admin" ] # KnC Miner and AntMiner default creds etc
 
 
 
