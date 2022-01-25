@@ -119,7 +119,7 @@ class sshscanner(threading.Thread): # TAG: 1A
                 pass
             x = 0
 
-for ip in ip_range = ipRange("" +sys.argv[1], "" +sys.argv[2]):
+for ip in ipRange("" +sys.argv[1], "" +sys.argv[2]):
     try:    
 	with print_lock:
             print(f'[ ~ ] Loading --> {str(ip)} <3')
